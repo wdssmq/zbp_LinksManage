@@ -1,0 +1,134 @@
+<?php
+require '../../../zb_system/function/c_system_base.php';
+require '../../../zb_system/function/c_system_admin.php';
+$zbp->Load();
+$action = 'root';
+if (!$zbp->CheckRights($action)) {
+  $zbp->ShowError(6);
+  die();
+}
+if (!$zbp->CheckPlugin('LinksManage')) {
+  $zbp->ShowError(48);
+  die();
+}
+
+$blogtitle = '链接管理';
+require $blogpath . 'zb_system/admin/admin_header.php';
+require $blogpath . 'zb_system/admin/admin_top.php';
+
+$act = GetVars('act', 'GET');
+$suc = GetVars('suc', 'GET');
+if (GetVars('act', 'GET') == 'save') {
+  foreach ($_POST as $key => $val) {
+    $_POST[$key] = trim($val);
+    $zbp->Config('LinksManage')->$key = $val;
+  }
+  $zbp->SaveConfig('LinksManage');
+  $zbp->SetHint('good');
+  Redirect('./main.php' . ($suc == null ? '' : "?act=$suc"));
+}
+
+
+$mod = new Module();
+$mod->ID = 0;
+$mod->Source = 'plugin_LinksManage';
+$list = '<tr><td><input type="text" name="href[]" value="http://" size="30" /></td><td><input type="text" name="title[]" value="链接描述" size="30" /></td><td><input type="text" name="name[]" value="新名称" size="20" /></td><td><input type="text" name="target[]" class="checkbox" value="0" /></td><td><input type="text" name="sub[]" class="checkbox" value="0" /></td></tr>';
+if ($edit = GetVars('edit', 'GET')) {
+  if (!empty($edit)) {
+    $mod = $zbp->modulesbyfilename[$edit];
+    $content = $mod->Content;
+    preg_match('/<\/ul><\/li>/i', $content, $tree);
+    if ($tree) $content = str_replace(array('<ul>', '</ul></li>'), array("</li>\n", ''), $content);
+    $preg = array(
+      'tag' => '/<li.*?<\/li>/',
+      'sub' => '/<li.*?class=[\'|\"](.*?)[\'|\"]/i',
+      'href' => '/<a.*?href=[\'|\"](.*?)[\'|\"]/i',
+      'target' => '/<a.*?target=[\'|\"](.*?)[\'|\"]/i',
+      'name' => '/<a.*?>(.*?)<\/a>/i',
+      'title' => '/<a.*?title=[\'|\"](.*?)[\'|\"]/i',
+    );
+    $link = array();
+    preg_match_all($preg['tag'], $content, $tag);
+    foreach ($tag[0] as $key => $val) {
+      foreach ($preg as $k => $v) {
+        preg_match($v, $val, $m);
+        if (count($m) > 1) {
+          if ($k == 'name') $m[1] = preg_replace('/<img.*?[\/]>/i', '', $m[1]);
+          if ($k == 'sub') $m[1] = !preg_match('/sub/i', $m[1]) ? '' : 'LinksManageSub';
+          $link[$k][$key] = $m[1];
+        } else {
+          $link[$k][$key] = '';
+        }
+      }
+    }
+    if ($link) {
+      $list = '';
+      foreach ($link['tag'] as $k => $v) {
+        $list .= '<tr class="' . $link['sub'][$k] . '">
+            <td><input name="href[]" value="' . $link['href'][$k] . '"/ size="30"></td>
+            <td><input name="title[]" value="' . $link['title'][$k] . '"/ size="30"></td>
+            <td><input name="name[]" value="' . $link['name'][$k] . '"/ size="20"></td>
+            <td><input name="target[]" value="' . ($link['target'][$k] ? 1 : 0) . '" class="checkbox"/></td>
+            <td><input name="sub[]" value="' . ($link['sub'][$k] ? 1 : 0) . '" class="checkbox"/></td>
+          <tr>';
+      }
+    }
+    if ($mod->Source == 'system' || $mod->Source == 'theme') {
+      $islock = 'readonly="readonly"';
+    }
+    $links = explode('|', LinksManage_Path("bakfile"));
+    $backup = in_array($mod->FileName, $links) ? '<input type="text" name="backup" class="checkbox" value="0"/> 备份当前链接内容（开启后提交将覆盖插件启用时备份的原始数据）' : '';
+  }
+}
+
+
+?>
+<div id="divMain">
+  <div class="divHeader"><?php echo $blogtitle; ?></div>
+  <div class="SubMenu">
+  </div>
+  <div id="divMain2">
+  <form id="edit" name="edit" method="post" action="main.php?token=<?php echo $zbp->GetToken(); ?>">
+      <input name="ID" type="hidden" value="<?php echo $mod->ID; ?>" />
+      <input name="Source" type="hidden" value="<?php echo $mod->Source; ?>" />
+      <table class="tableFull tableBorder tableBorder-thcenter">
+        <thead>
+          <tr>
+            <th>链接</th>
+            <th>描述</th>
+            <th>名称</th>
+            <th class="td10"><abbr title="是否在新窗口打开">新窗</abbr></th>
+            <th class="td10"><abbr title="作为前一个一级链接的二级链接">二级</abbr></th>
+          </tr>
+        </thead>
+        <tbody id="LinksManageList">
+<?php echo $list; ?>
+        </tbody>
+        <tfoot>
+          <tr id="LinksManageAdd">
+            <td colspan="5" class="tdCenter"><input type="button" class="js-add" value="添加项目" class="button"></td>
+          </tr>
+          <tr id="LinksManageDel">
+            <td colspan="5" class="tdCenter">拖入这里删除</td>
+          </tr>
+          <tr class="LinksManageAdd">
+            <td><input type="text" name="href[]" value="http://" size="30" /></td>
+            <td><input type="text" name="title[]" value="链接描述" size="30" /></td>
+            <td><input type="text" name="name[]" value="新名称" size="20" /></td>
+            <td><input type="text" name="target[]" class="checkbox" value="0" /></td>
+            <td><input type="text" name="sub[]" class="checkbox" value="0" /></td>
+          </tr>
+        </tfoot>
+      </table>
+      <p>
+        <input type="submit" class="button" value="<?php echo $lang['msg']['submit'] ?>" onclick="return checkInfo();" />
+        <input type="text" name="stay" class="checkbox" value="0"/> 提交后返回本页
+        <?php echo $backup ?>
+      </p>
+    </form>
+  </div>
+</div>
+<?php
+require $blogpath . 'zb_system/admin/admin_footer.php';
+RunTime();
+?>

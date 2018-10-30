@@ -1,0 +1,100 @@
+$(function() {
+  if ($(".js-mod").length > 0) {
+    let LinksManage = $(".js-mod")
+        .val()
+        .split("|"),
+      mod;
+    for (link in LinksManage) {
+      if ((mod = LinksManage[link])) {
+        $(".widget-list .widget_id_" + mod)
+          .addClass("LinksManage")
+          .find("a:first")
+          .attr(
+            "href",
+            bloghost + "zb_users/plugin/LinksManage/main.php" + "?edit=" + mod
+          );
+        $(".SubMenu")
+          .find("a[href*='" + mod + "']")
+          .addClass("LinksManage")
+          .attr(
+            "href",
+            bloghost + "zb_users/plugin/LinksManage/main.php" + "?edit=" + mod
+          );
+      }
+    }
+  }
+  ///////////
+  $(".js-add").click(function() {
+    if ($(".LinksManageAdd").length === 1) {
+      $("#LinksManageList").append($("tfoot .LinksManageAdd").clone());
+    }
+    $("#LinksManageList .LinksManageAdd").each(function() {
+      $(this).removeClass("LinksManageAdd");
+    });
+    return;
+  });
+  $("#LinksManageList").sortable({
+    axis: "y",
+    opacity: 0.5,
+    stop: function(event, ui) {
+      $("input[name='sub[]']")
+        .next(".imgcheck")
+        .click(function() {
+          var me = this;
+          setTimeout(function() {
+            $(me)
+              .closest("tr")
+              [$(me).hasClass("imgcheck-on") ? "addClass" : "removeClass"](
+                "LinksManageSub"
+              );
+          }, 20);
+        });
+    }
+  });
+
+  $("#LinksManageDel").droppable({
+    accept: "#LinksManageList tr",
+    addClasses: false,
+    drop: function(event, ui) {
+      ui.draggable.remove();
+    },
+    over: function(event, ui) {
+      $(this)
+        .find("td")
+        .html("松手删除");
+    },
+    out: function(event, ui) {
+      $(this)
+        .find("td")
+        .html("拖入这里删除");
+    },
+    activeClass: "active",
+    hoverClass: "hover"
+  });
+  $("input[name='sub[]']")
+    .next(".imgcheck")
+    .click(function() {
+      var me = this;
+      setTimeout(function() {
+        $(me)
+          .closest("tr")
+          [$(me).hasClass("imgcheck-on") ? "addClass" : "removeClass"](
+            "LinksManageSub"
+          );
+      }, 20);
+    });
+});
+function checkInfo() {
+  if (!$("#edtName").val()) {
+    alert("<?php echo $lang['error']['72']?>");
+    return false;
+  }
+  if (!$("#edtFileName").val()) {
+    alert("<?php echo $lang['error']['75']?>");
+    return false;
+  }
+  if (!$("#edtHtmlID").val()) {
+    alert("<?php echo $lang['error']['76']?>");
+    return false;
+  }
+}
