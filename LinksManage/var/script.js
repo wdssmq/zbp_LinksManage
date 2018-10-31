@@ -74,7 +74,7 @@ $(function() {
   $("input[name='sub[]']")
     .next(".imgcheck")
     .click(function() {
-      var me = this;
+      let me = this;
       setTimeout(function() {
         $(me)
           .closest("tr")

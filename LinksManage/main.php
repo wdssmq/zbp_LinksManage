@@ -12,20 +12,53 @@ if (!$zbp->CheckPlugin('LinksManage')) {
   die();
 }
 
-$blogtitle = '链接管理';
-require $blogpath . 'zb_system/admin/admin_header.php';
-require $blogpath . 'zb_system/admin/admin_top.php';
-
 $act = GetVars('act', 'GET');
 $suc = GetVars('suc', 'GET');
 if (GetVars('act', 'GET') == 'save') {
-  foreach ($_POST as $key => $val) {
-    $_POST[$key] = trim($val);
-    $zbp->Config('LinksManage')->$key = $val;
+  if (function_exists('CheckIsRefererValid')) {
+    CheckIsRefererValid();
   }
-  $zbp->SaveConfig('LinksManage');
+  $mod = $zbp->GetModuleByID(GetVars('ID', 'POST'));
+  $content = '';
+  $sub = 0;
+  $tree = (int)$_POST['tree'] == 1;
+  $items = array();
+  $parent = null;
+  foreach ($_POST['name'] as $k => $v) {
+    $item = (object)array();
+
+    if ($k == count($_POST['name']) - 1) continue;
+    $item->href = $_POST['href'][$k];
+    $item->title = $_POST['title'][$k];
+    $item->target = !$_POST['target'][$k] ? '' : '_blank';
+    $item->name = $_POST['name'][$k];
+    $item->subs = array();
+    if ($_POST['sub'][$k]) {
+      $parent->subs[] = $item;
+    } else {
+      $items[$k] = $item;
+      $parent = &$items[$k];
+    }
+  }
+  foreach ($items as $item) {
+    $zbp->template->SetTags('item', $item);
+    $content .= $zbp->template->Output("LinksManage");
+  }
+  $content = str_replace(array('target="" ',' target=""',"\n"),"",CloseTags($content));
+  $content = preg_replace('/>\s+</',"><",$content);
+  $mod->Content = $content;
+  $mod->Name = $_POST['Name'];
+  $mod->FileName = $_POST['FileName'];
+  $mod->HtmlID = $_POST['HtmlID'];
+  $mod->Source = $_POST['Source'];
+  $mod->Type = 'ul';
+  $mod->MaxLi = 0;
+  FilterModule($mod);
+  $mod->Save();
+  $zbp->AddBuildModule($mod->FileName);
+  $zbp->BuildModule();
   $zbp->SetHint('good');
-  Redirect('./main.php' . ($suc == null ? '' : "?act=$suc"));
+  Redirect($_POST['stay'] == '1' ? $_SERVER['HTTP_REFERER'] : '../../../zb_system/cmd.php?act=ModuleMng');
 }
 
 
@@ -33,6 +66,11 @@ $mod = new Module();
 $mod->ID = 0;
 $mod->Source = 'plugin_LinksManage';
 $list = '<tr><td><input type="text" name="href[]" value="http://" size="30" /></td><td><input type="text" name="title[]" value="链接描述" size="30" /></td><td><input type="text" name="name[]" value="新名称" size="20" /></td><td><input type="text" name="target[]" class="checkbox" value="0" /></td><td><input type="text" name="sub[]" class="checkbox" value="0" /></td></tr>';
+
+$islock = '';
+$tree = null;
+$backup = '';
+
 if ($edit = GetVars('edit', 'GET')) {
   if (!empty($edit)) {
     $mod = $zbp->modulesbyfilename[$edit];
@@ -81,14 +119,17 @@ if ($edit = GetVars('edit', 'GET')) {
   }
 }
 
-
+$blogtitle = '链接管理';
+$blogtitle .= $mod->Name !== "" ? "（<small>{$mod->Name}</small>）" : "";
+require $blogpath . 'zb_system/admin/admin_header.php';
+require $blogpath . 'zb_system/admin/admin_top.php';
 ?>
 <div id="divMain">
   <div class="divHeader"><?php echo $blogtitle; ?></div>
   <div class="SubMenu">
   </div>
   <div id="divMain2">
-  <form id="edit" name="edit" method="post" action="main.php?token=<?php echo $zbp->GetToken(); ?>">
+  <form id="edit" name="edit" method="post" action="<?php echo BuildSafeURL('main.php?act=save'); ?>">
       <input name="ID" type="hidden" value="<?php echo $mod->ID; ?>" />
       <input name="Source" type="hidden" value="<?php echo $mod->Source; ?>" />
       <table class="tableFull tableBorder tableBorder-thcenter">
@@ -119,6 +160,22 @@ if ($edit = GetVars('edit', 'GET')) {
             <td><input type="text" name="sub[]" class="checkbox" value="0" /></td>
           </tr>
         </tfoot>
+      </table>
+      <table class="tableFull tableBorder tableBorder-thcenter">
+        <tr>
+          <th><?php echo $lang['msg']['name'] ?></th>
+          <th><?php echo $lang['msg']['filename'] ?></th>
+          <th><?php echo $lang['msg']['htmlid'] ?></th>
+          <th class="td10"><?php echo $lang['msg']['hide_title'] ?></th>
+          <th class="td10"><abbr title="关闭树形则采用嵌套格式，即二级菜单默认隐藏">树形[?]</abbr></th>
+        </tr>
+        <tr>
+          <td><input id="edtName" size="20" name="Name" maxlength="50" type="text" value="<?php echo $mod->Name; ?>" /></td>
+          <td><input id="edtFileName" size="20" name="FileName" type="text" value="<?php echo $mod->FileName; ?>" <?php echo $islock ?>/></td>
+          <td><input id="edtHtmlID" size="20" name="HtmlID" type="text" value="<?php echo $mod->HtmlID; ?>" /></td>
+          <td ><input type="text" id="IsHideTitle" name="IsHideTitle" class="checkbox" value="<?php echo $mod->IsHideTitle; ?>"/></td>
+          <td ><input type="text" name="tree" class="checkbox" value="<?php echo $tree ? 0 : 1; ?>"/></td>
+        </tr>
       </table>
       <p>
         <input type="submit" class="button" value="<?php echo $lang['msg']['submit'] ?>" onclick="return checkInfo();" />

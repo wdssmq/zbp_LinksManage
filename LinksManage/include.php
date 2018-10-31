@@ -8,6 +8,12 @@ function ActivePlugin_LinksManage()
 	Add_Filter_Plugin('Filter_Plugin_Admin_CategoryMng_SubMenu', 'LinksManage_AddMenu');
 	Add_Filter_Plugin('Filter_Plugin_Admin_PageMng_SubMenu', 'LinksManage_AddMenu');
 	Add_Filter_Plugin('Filter_Plugin_Admin_ModuleMng_SubMenu', 'LinksManage_ModuleMenu');
+	Add_Filter_Plugin('Filter_Plugin_Zbp_BuildTemplate', 'LinksManage_BuidTemp');
+}
+function LinksManage_BuidTemp(&$templates)
+{
+	// global $zbp;
+	$templates['LinksManage'] = file_get_contents(LinksManage_Path("u-temp"));
 }
 function LinksManage_ModuleMenu()
 {
@@ -44,6 +50,12 @@ function LinksManage_Path($file, $t = "path")
 	global $zbp;
 	$result = $zbp->$t . "zb_users/plugin/LinksManage/";
 	switch ($file) {
+		case "u-temp":
+			return $result . "usr/li.html";
+			break;
+		case "v-temp":
+			return $result . "var/li.html";
+			break;
 		case "style":
 			return $result . "var/style.css";
 			break;
@@ -74,6 +86,15 @@ function InstallPlugin_LinksManage()
 	foreach ($links as $mod) {
 		$backup = $zbp->modulesbyfilename[$mod]->Content;
 		file_put_contents(LinksManage_Path("bakdir") . $mod . '.txt', $backup);
+	}
+	$filesList = array("temp");
+	foreach ($filesList as $key => $value) {
+		$uFile = LinksManage_Path("u-{$value}");
+		$vFile = LinksManage_Path("v-{$value}");
+		if (!is_file($uFile)) {
+			@mkdir(dirname($uFile));
+			copy($vFile, $uFile);
+		}
 	}
 }
 function UninstallPlugin_LinksManage()
