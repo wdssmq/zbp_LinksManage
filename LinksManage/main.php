@@ -33,19 +33,23 @@ if (GetVars('act', 'GET') == 'save') {
     $item->target = !$_POST['target'][$k] ? '' : '_blank';
     $item->name = $_POST['name'][$k];
     $item->subs = array();
+    $item->issub = 0;
     if ($_POST['sub'][$k]) {
+      $item->issub = 1;
       $parent->subs[] = $item;
     } else {
       $items[$k] = $item;
       $parent = &$items[$k];
     }
   }
+  $file = LinksManage_Path("usr") . $_POST['FileName'] . ".json";
+  file_put_contents($file, json_encode($items));
   foreach ($items as $item) {
     $zbp->template->SetTags('item', $item);
-    $content .= $zbp->template->Output("LinksManage");
+    $content .= $zbp->template->Output("Links_defend");
   }
-  $content = str_replace(array('target="" ',' target=""',"\n"),"",CloseTags($content));
-  $content = preg_replace('/>\s+</',"><",$content);
+  $content = str_replace(array('target="" ', ' target=""', "\n"), "", CloseTags($content));
+  $content = preg_replace('/>\s+</', "><", $content);
   $mod->Content = $content;
   $mod->Name = $_POST['Name'];
   $mod->FileName = $_POST['FileName'];
@@ -72,7 +76,20 @@ $tree = null;
 $backup = '';
 
 if ($edit = GetVars('edit', 'GET')) {
-  if (!empty($edit)) {
+  $file = LinksManage_Path("usr") . $edit . ".json";
+  if (is_file($file) && $items = json_decode(file_get_contents($file))) {
+    $list = '';
+    foreach ($items as $item) {
+      $zbp->template->SetTags('item', $item);
+      $list .= $zbp->template->Output("Links_admin");
+    }
+    $mod = $zbp->modulesbyfilename[$edit];
+    if ($mod->Source == 'system' || $mod->Source == 'theme') {
+      $islock = 'readonly="readonly"';
+    }
+    $links = explode('|', LinksManage_Path("bakfile"));
+    $backup = in_array($mod->FileName, $links) ? '<input type="text" name="backup" class="checkbox" value="0"/> 备份当前链接内容（开启后提交将覆盖插件启用时备份的原始数据）' : '';
+  } else if (!empty($edit)) {
     $mod = $zbp->modulesbyfilename[$edit];
     $content = $mod->Content;
     preg_match('/<\/ul><\/li>/i', $content, $tree);
@@ -103,11 +120,11 @@ if ($edit = GetVars('edit', 'GET')) {
       $list = '';
       foreach ($link['tag'] as $k => $v) {
         $list .= '<tr class="' . $link['sub'][$k] . '">
-            <td><input name="href[]" value="' . $link['href'][$k] . '"/ size="30"></td>
-            <td><input name="title[]" value="' . $link['title'][$k] . '"/ size="30"></td>
-            <td><input name="name[]" value="' . $link['name'][$k] . '"/ size="20"></td>
-            <td><input name="target[]" value="' . ($link['target'][$k] ? 1 : 0) . '" class="checkbox"/></td>
-            <td><input name="sub[]" value="' . ($link['sub'][$k] ? 1 : 0) . '" class="checkbox"/></td>
+            <td><input name="href[]" value="' . $link['href'][$k] . '" size="30" /></td>
+            <td><input name="title[]" value="' . $link['title'][$k] . '" size="30" /></td>
+            <td><input name="name[]" value="' . $link['name'][$k] . '" size="20" /></td>
+            <td><input name="target[]" value="' . ($link['target'][$k] ? 1 : 0) . '" class="checkbox" /></td>
+            <td><input name="sub[]" value="' . ($link['sub'][$k] ? 1 : 0) . '" class="checkbox" /></td>
           <tr>';
       }
     }
@@ -147,7 +164,7 @@ require $blogpath . 'zb_system/admin/admin_top.php';
         </tbody>
         <tfoot>
           <tr id="LinksManageAdd">
-            <td colspan="5" class="tdCenter"><input type="button" class="js-add" value="添加项目" class="button"></td>
+            <td colspan="5" class="tdCenter"><input type="button" class="button js-add" value="添加项目"></td>
           </tr>
           <tr id="LinksManageDel">
             <td colspan="5" class="tdCenter">拖入这里删除</td>

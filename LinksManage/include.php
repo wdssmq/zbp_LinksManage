@@ -13,7 +13,8 @@ function ActivePlugin_LinksManage()
 function LinksManage_BuidTemp(&$templates)
 {
 	// global $zbp;
-	$templates['LinksManage'] = file_get_contents(LinksManage_Path("u-temp"));
+	$templates['Links_defend'] = file_get_contents(LinksManage_Path("u-temp"));
+	$templates['Links_admin'] = file_get_contents(LinksManage_Path("tr"));
 }
 function LinksManage_ModuleMenu()
 {
@@ -56,11 +57,17 @@ function LinksManage_Path($file, $t = "path")
 		case "v-temp":
 			return $result . "var/li.html";
 			break;
+		case "tr":
+			return $result . "var/tr.html";
+			break;
 		case "style":
 			return $result . "var/style.css";
 			break;
 		case "script":
 			return $result . "var/script.js";
+			break;
+		case "usr":
+			return $result . "usr/";
 			break;
 		case "bakdir":
 			return $result . "backup/";
