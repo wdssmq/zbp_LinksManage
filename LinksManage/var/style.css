@@ -1,4 +1,4 @@
-.hidden{
+.hidden {
   display: none;
 }
 .LinksManage {
@@ -13,13 +13,15 @@
   content: "└ ";
 }
 #LinksManageList td {
-  padding: 10px;
+  padding: 7px;
 }
 #LinksManageAdd td {
   padding: 5px;
 }
 #LinksManageDel {
+  font-size: 15px;
   visibility: hidden;
+  height: 1px;
   line-height: 1px;
 }
 #LinksManageDel.active {
@@ -28,8 +30,6 @@
   color: #fff;
   padding: 20px;
   visibility: visible;
-  line-height: 2em;
-  font-size: 15px;
 }
 #LinksManageDel.hover {
   transition: all linear 0.2s;

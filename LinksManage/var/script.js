@@ -33,9 +33,16 @@ $(function() {
     });
     return;
   });
+  $("#LinksManageList td").each(function() {
+    let intWidth = $(this).width();
+    $(this).css({ width: intWidth });
+    // $(this).data("width", intWidth);
+  });
   $("#LinksManageList").sortable({
     axis: "y",
     opacity: 0.5,
+    cursor: "move",
+    delay: 150,
     stop: function(event, ui) {
       $("input[name='sub[]']")
         .next(".imgcheck")
@@ -55,6 +62,12 @@ $(function() {
   $("#LinksManageDel").droppable({
     accept: "#LinksManageList tr",
     addClasses: false,
+    create: function(event, ui) {
+      $(this).css({
+        height: "2em",
+        lineHeight: "2em"
+      });
+    },
     drop: function(event, ui) {
       ui.draggable.remove();
     },
@@ -84,4 +97,3 @@ $(function() {
       }, 20);
     });
 });
-

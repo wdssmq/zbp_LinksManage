@@ -166,7 +166,7 @@ require $blogpath . 'zb_system/admin/admin_top.php';
           <tr id="LinksManageAdd">
             <td colspan="5" class="tdCenter"><input type="button" class="button js-add" value="添加项目"></td>
           </tr>
-          <tr id="LinksManageDel">
+          <tr id="LinksManageDel" >
             <td colspan="5" class="tdCenter">拖入这里删除</td>
           </tr>
           <tr class="LinksManageAdd">
