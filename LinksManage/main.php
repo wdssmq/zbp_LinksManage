@@ -184,14 +184,14 @@ require $blogpath . 'zb_system/admin/admin_top.php';
           <th><?php echo $lang['msg']['filename'] ?></th>
           <th><?php echo $lang['msg']['htmlid'] ?></th>
           <th class="td10"><?php echo $lang['msg']['hide_title'] ?></th>
-          <th class="td10"><abbr title="关闭树形则采用嵌套格式，即二级菜单默认隐藏">树形[?]</abbr></th>
+          <th class="td10 hidden"><abbr title="关闭树形则采用嵌套格式，即二级菜单默认隐藏">树形[?]</abbr></th>
         </tr>
         <tr>
           <td><input id="edtName" size="20" name="Name" maxlength="50" type="text" value="<?php echo $mod->Name; ?>" /></td>
           <td><input id="edtFileName" size="20" name="FileName" type="text" value="<?php echo $mod->FileName; ?>" <?php echo $islock ?>/></td>
           <td><input id="edtHtmlID" size="20" name="HtmlID" type="text" value="<?php echo $mod->HtmlID; ?>" /></td>
-          <td ><input type="text" id="IsHideTitle" name="IsHideTitle" class="checkbox" value="<?php echo $mod->IsHideTitle; ?>"/></td>
-          <td ><input type="text" name="tree" class="checkbox" value="<?php echo $tree ? 0 : 1; ?>"/></td>
+          <td><input type="text" id="IsHideTitle" name="IsHideTitle" class="checkbox" value="<?php echo $mod->IsHideTitle; ?>"/></td>
+          <td class="hidden"><input type="text" name="tree" class="checkbox" value="<?php echo $tree ? 0 : 1; ?>"/></td>
         </tr>
       </table>
       <p>
@@ -202,6 +202,22 @@ require $blogpath . 'zb_system/admin/admin_top.php';
     </form>
   </div>
 </div>
+<script>
+function checkInfo() {
+  if (!$("#edtName").val()) {
+    alert("<?php echo $lang['error']['72']?>");
+    return false;
+  }
+  if (!$("#edtFileName").val()) {
+    alert("<?php echo $lang['error']['75']?>");
+    return false;
+  }
+  if (!$("#edtHtmlID").val()) {
+    alert("<?php echo $lang['error']['76']?>");
+    return false;
+  }
+}
+</script>
 <?php
 require $blogpath . 'zb_system/admin/admin_footer.php';
 RunTime();

@@ -13,7 +13,9 @@ function ActivePlugin_LinksManage()
 function LinksManage_BuidTemp(&$templates)
 {
 	// global $zbp;
-	$templates['Links_defend'] = file_get_contents(LinksManage_Path("u-temp"));
+	if (is_file(LinksManage_Path("u-temp"))) {
+		$templates['Links_defend'] = file_get_contents(LinksManage_Path("u-temp"));
+	}
 	$templates['Links_admin'] = file_get_contents(LinksManage_Path("tr"));
 }
 function LinksManage_ModuleMenu()
@@ -103,6 +105,7 @@ function InstallPlugin_LinksManage()
 			copy($vFile, $uFile);
 		}
 	}
+	$zbp->BuildTemplate();
 }
 function UninstallPlugin_LinksManage()
 {

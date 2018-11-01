@@ -84,17 +84,4 @@ $(function() {
       }, 20);
     });
 });
-function checkInfo() {
-  if (!$("#edtName").val()) {
-    alert("<?php echo $lang['error']['72']?>");
-    return false;
-  }
-  if (!$("#edtFileName").val()) {
-    alert("<?php echo $lang['error']['75']?>");
-    return false;
-  }
-  if (!$("#edtHtmlID").val()) {
-    alert("<?php echo $lang['error']['76']?>");
-    return false;
-  }
-}
+
