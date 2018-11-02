@@ -34,7 +34,7 @@ if (GetVars('act', 'GET') == 'save') {
     $item->name = $_POST['name'][$k];
     $item->subs = array();
     $item->issub = 0;
-    if ($_POST['sub'][$k]) {
+    if ($k > 0 && $_POST['sub'][$k]) {
       $item->issub = 1;
       $parent->subs[] = $item;
     } else {
@@ -205,15 +205,15 @@ require $blogpath . 'zb_system/admin/admin_top.php';
 <script>
 function checkInfo() {
   if (!$("#edtName").val()) {
-    alert("<?php echo $lang['error']['72']?>");
+    alert("<?php echo $lang['error']['72'] ?>");
     return false;
   }
   if (!$("#edtFileName").val()) {
-    alert("<?php echo $lang['error']['75']?>");
+    alert("<?php echo $lang['error']['75'] ?>");
     return false;
   }
   if (!$("#edtHtmlID").val()) {
-    alert("<?php echo $lang['error']['76']?>");
+    alert("<?php echo $lang['error']['76'] ?>");
     return false;
   }
 }
