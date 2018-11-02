@@ -73,9 +73,12 @@ $list = '<tr><td><input type="text" name="href[]" value="http://" size="30" /></
 
 $islock = '';
 $tree = null;
-$backup = '';
+$delbtn = '';
 
 if ($edit = GetVars('edit', 'GET')) {
+  if (!empty($edit)) {
+    $mod = $zbp->modulesbyfilename[$edit];
+  }
   $file = LinksManage_Path("usr") . $edit . ".json";
   if (is_file($file) && $items = json_decode(file_get_contents($file))) {
     $list = '';
@@ -83,14 +86,7 @@ if ($edit = GetVars('edit', 'GET')) {
       $zbp->template->SetTags('item', $item);
       $list .= $zbp->template->Output("Links_admin");
     }
-    $mod = $zbp->modulesbyfilename[$edit];
-    if ($mod->Source == 'system' || $mod->Source == 'theme') {
-      $islock = 'readonly="readonly"';
-    }
-    $links = explode('|', LinksManage_Path("bakfile"));
-    $backup = in_array($mod->FileName, $links) ? '<input type="text" name="backup" class="checkbox" value="0"/> 备份当前链接内容（开启后提交将覆盖插件启用时备份的原始数据）' : '';
-  } else if (!empty($edit)) {
-    $mod = $zbp->modulesbyfilename[$edit];
+  } else {
     $content = $mod->Content;
     preg_match('/<\/ul><\/li>/i', $content, $tree);
     if ($tree) $content = str_replace(array('<ul>', '</ul></li>'), array("</li>\n", ''), $content);
@@ -128,12 +124,11 @@ if ($edit = GetVars('edit', 'GET')) {
           <tr>';
       }
     }
-    if ($mod->Source == 'system' || $mod->Source == 'theme') {
-      $islock = 'readonly="readonly"';
-    }
-    $links = explode('|', LinksManage_Path("bakfile"));
-    $backup = in_array($mod->FileName, $links) ? '<input type="text" name="backup" class="checkbox" value="0"/> 备份当前链接内容（开启后提交将覆盖插件启用时备份的原始数据）' : '';
   }
+  if ($mod->Source == 'system' || $mod->Source == 'theme') {
+    $islock = 'readonly="readonly"';
+  }
+  $delbtn = $mod->Source === 'plugin_LinksManage' ? '&nbsp;<a title="删除当前模块" onclick="return window.confirm(\'' . $zbp->lang['msg']['confirm_operating'] . '\');" href="' . BuildSafeCmdURL('act=ModuleDel&amp;source=theme&amp;filename=' . $mod->FileName) . '"><img src="' . $zbp->host . 'zb_system/image/admin/delete.png" alt="删除" title="删除" width="16"></a>' : '';
 }
 
 $blogtitle = '链接管理';
@@ -184,20 +179,21 @@ require $blogpath . 'zb_system/admin/admin_top.php';
           <th><?php echo $lang['msg']['filename'] ?></th>
           <th><?php echo $lang['msg']['htmlid'] ?></th>
           <th class="td10"><?php echo $lang['msg']['hide_title'] ?></th>
+          <th class="td10"><?php echo $lang['msg']['del'] ?></th>
           <th class="td10 hidden"><abbr title="关闭树形则采用嵌套格式，即二级菜单默认隐藏">树形[?]</abbr></th>
         </tr>
         <tr>
           <td><input id="edtName" size="20" name="Name" maxlength="50" type="text" value="<?php echo $mod->Name; ?>" /></td>
           <td><input id="edtFileName" size="20" name="FileName" type="text" value="<?php echo $mod->FileName; ?>" <?php echo $islock ?>/></td>
           <td><input id="edtHtmlID" size="20" name="HtmlID" type="text" value="<?php echo $mod->HtmlID; ?>" /></td>
-          <td><input type="text" id="IsHideTitle" name="IsHideTitle" class="checkbox" value="<?php echo $mod->IsHideTitle; ?>"/></td>
+          <td class="tdCenter"><input type="text" id="IsHideTitle" name="IsHideTitle" class="checkbox" value="<?php echo $mod->IsHideTitle; ?>"/></td>
+          <td class="tdCenter"><?php echo $delbtn ?></td>
           <td class="hidden"><input type="text" name="tree" class="checkbox" value="<?php echo $tree ? 0 : 1; ?>"/></td>
         </tr>
       </table>
       <p>
         <input type="submit" class="button" value="<?php echo $lang['msg']['submit'] ?>" onclick="return checkInfo();" />
         <input type="text" name="stay" class="checkbox" value="0"/> 提交后返回本页
-        <?php echo $backup ?>
       </p>
     </form>
   </div>
