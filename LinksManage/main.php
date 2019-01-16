@@ -129,6 +129,10 @@ if ($edit = GetVars('edit', 'GET')) {
     $islock = 'readonly="readonly"';
   }
   $delbtn = $mod->Source === 'plugin_LinksManage' ? '&nbsp;<a title="删除当前模块" onclick="return window.confirm(\'' . $zbp->lang['msg']['confirm_operating'] . '\');" href="' . BuildSafeCmdURL('act=ModuleDel&amp;source=theme&amp;filename=' . $mod->FileName) . '"><img src="' . $zbp->host . 'zb_system/image/admin/delete.png" alt="删除" title="删除" width="16"></a>' : '';
+  $bakFile = LinksManage_Path("bakdir") . "{$mod->FileName}.txt";
+  if (is_file($bakFile)) {
+    $bakUrl = str_replace($zbp->path, $zbp->host, $bakFile);
+  }
 }
 
 $blogtitle = '链接管理';
@@ -159,7 +163,7 @@ require $blogpath . 'zb_system/admin/admin_top.php';
         </tbody>
         <tfoot>
           <tr id="LinksManageAdd">
-            <td colspan="5" class="tdCenter"><input type="button" class="button js-add" value="添加项目"></td>
+            <td colspan="5" class="tdCenter"><input type="button" class="button js-add" value="添加项目">已有项目可拖动排序或删除</td>
           </tr>
           <tr id="LinksManageDel" >
             <td colspan="5" class="tdCenter">拖入这里删除</td>
@@ -194,6 +198,9 @@ require $blogpath . 'zb_system/admin/admin_top.php';
       <p>
         <input type="submit" class="button" value="<?php echo $lang['msg']['submit'] ?>" onclick="return checkInfo();" />
         <input type="text" name="stay" class="checkbox" value="0"/> 提交后返回本页
+        <?php if (isset($bakUrl)) {?>
+          <a title="查看备份" href="<?php echo $bakUrl; ?>" target="_blank">查看备份（<?php echo $mod->FileName; ?>）</a>
+        <?php }?>
       </p>
     </form>
   </div>
