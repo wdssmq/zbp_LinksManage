@@ -14,7 +14,7 @@ $(function() {
             bloghost + "zb_users/plugin/LinksManage/main.php" + "?edit=" + mod
           );
         $(".SubMenu")
-          .find("a[href*='" + mod + "']")
+          .find("a[href$='" + mod + "']")
           .addClass("LinksManage")
           .attr(
             "href",
