@@ -34,7 +34,7 @@ if (GetVars('act', 'GET') == 'save') {
         }
         $item->href = $_POST['href'][$k];
         $item->title = $_POST['title'][$k];
-        $item->target = !$_POST['target'][$k] ? '' : '_blank';
+        $item->target = (bool) $_POST['target'][$k] ? '_blank' : '';
         $item->name = $_POST['name'][$k];
         $item->subs = array();
         $item->issub = 0;
@@ -157,9 +157,9 @@ if ($edit = GetVars('edit', 'GET')) {
             }
         }
     }
-    // if ($mod->Source == 'system' || $mod->Source == 'theme') {
-    $islock = 'readonly="readonly"';
-    // }
+    if ($mod->Source == 'system' || $mod->Source == 'theme') {
+      $islock = 'readonly="readonly"';
+    }
     $delbtn = $mod->Source === 'plugin_LinksManage' ? '&nbsp;<a title="删除当前模块"
     onclick="return window.confirm(\'' . $zbp->lang['msg']['confirm_operating'] . '\');"
     href="' . BuildSafeCmdURL('act=ModuleDel&amp;source=theme&amp;filename=' . $mod->FileName) . '"><img
