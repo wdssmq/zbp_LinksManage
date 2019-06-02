@@ -93,7 +93,7 @@ function LinksManage_Path($file, $t = "path")
 function InstallPlugin_LinksManage()
 {
   global $zbp;
-  // 备份还是有必要的 @猪
+
   $dir = LinksManage_Path("cache");
   if (!is_dir($dir)) {
     @mkdir($dir, 0755);

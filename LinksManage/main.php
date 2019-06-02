@@ -157,7 +157,7 @@ if ($edit = GetVars('edit', 'GET')) {
             }
         }
     }
-    if ($mod->Source == 'system' || $mod->Source == 'theme') {
+    if ($mod->Source == 'system' || $mod->Source == 'theme' || $mod->FileName !== "") {
       $islock = 'readonly="readonly"';
     }
     $delbtn = $mod->Source === 'plugin_LinksManage' ? '&nbsp;<a title="删除当前模块"
@@ -217,7 +217,7 @@ require $blogpath . 'zb_system/admin/admin_top.php';
         <tr>
           <th><?php echo $lang['msg']['name'] ?>（简明的中文标识）</th>
           <th><?php echo $lang['msg']['filename'] ?>（非中文且文件命名可用）</th>
-          <th><?php echo $lang['msg']['htmlid'] ?>（HTML规范的元素ID）</th>
+          <th><?php echo $lang['msg']['htmlid'] ?>（留空将使用文件名）</th>
           <th class="td10"><?php echo $lang['msg']['hide_title'] ?></th>
           <th class="td10"><?php echo $lang['msg']['del'] ?></th>
           <th class="td10 hidden"><abbr title="关闭树形则采用嵌套格式，即二级菜单默认隐藏">树形[?]</abbr></th>
