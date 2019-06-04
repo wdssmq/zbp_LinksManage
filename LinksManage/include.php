@@ -17,6 +17,8 @@ function LinksManage_BuildTemp(&$templates)
   // global $zbp;
   if (is_file(LinksManage_Path("u-temp"))) {
     $templates['Links_defend'] = file_get_contents(LinksManage_Path("u-temp"));
+  } else {
+    $templates['Links_defend'] = file_get_contents(LinksManage_Path("v-temp"));
   }
   $templates['Links_admin'] = file_get_contents(LinksManage_Path("tr"));
 }
@@ -102,6 +104,10 @@ function InstallPlugin_LinksManage()
   if (!is_dir($dir)) {
     @mkdir($dir, 0755);
   }
+  $dir = LinksManage_Path("usr");
+  if (!is_dir($dir)) {
+    @mkdir($dir, 0755);
+  }
   $links = explode('|', LinksManage_Path("bakfile"));
   foreach ($links as $mod) {
     $backup = $zbp->modulesbyfilename[$mod]->Content;
@@ -110,15 +116,15 @@ function InstallPlugin_LinksManage()
       file_put_contents($bakFile, $backup);
     }
   }
-  $filesList = array("temp");
-  foreach ($filesList as $key => $value) {
-    $uFile = LinksManage_Path("u-{$value}");
-    $vFile = LinksManage_Path("v-{$value}");
-    if (!is_file($uFile)) {
-      @mkdir(dirname($uFile));
-      copy($vFile, $uFile);
-    }
-  }
+  // $filesList = array("temp");
+  // foreach ($filesList as $key => $value) {
+  //   $uFile = LinksManage_Path("u-{$value}");
+  //   $vFile = LinksManage_Path("v-{$value}");
+  //   if (!is_file($uFile)) {
+  //     @mkdir(dirname($uFile));
+  //     copy($vFile, $uFile);
+  //   }
+  // }
   $zbp->BuildTemplate();
 }
 function UninstallPlugin_LinksManage()
