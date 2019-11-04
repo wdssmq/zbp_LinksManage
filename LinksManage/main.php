@@ -94,7 +94,7 @@ if (GetVars('act', 'GET') == 'save') {
 $mod = new Module();
 $mod->ID = 0;
 $mod->Source = 'plugin_LinksManage';
-$list = '<tr><td><input type="text" name="href[]" value="http://" size="30" /></td><td><input type="text" name="title[]" value="链接描述" size="30" /></td><td><input type="text" name="name[]" value="新名称" size="20" /></td><td><input type="text" name="target[]" class="checkbox" value="0" /></td><td><input type="text" name="sub[]" class="checkbox" value="0" /></td></tr>';
+$list = '<tr><td><input type="text" name="href[]" value="http://" size="30" /></td><td><input type="text" name="ico[]" value="" size="15" /></td><td><input type="text" name="title[]" value="链接描述" size="30" /></td><td><input type="text" name="name[]" value="新名称" size="20" /></td><td><input type="text" name="target[]" class="checkbox" value="0" /></td><td><input type="text" name="sub[]" class="checkbox" value="0" /></td></tr>';
 
 $islock = '';
 $tree = null;
@@ -208,13 +208,14 @@ require $blogpath . 'zb_system/admin/admin_top.php';
         </tbody>
         <tfoot>
           <tr id="LinksManageAdd">
-            <td colspan="5" class="tdCenter"><input type="button" class="button js-add" value="添加项目">已有项目可拖动排序或删除</td>
+            <td colspan="6" class="tdCenter"><input type="button" class="button js-add" value="添加项目">已有项目可拖动排序或删除</td>
           </tr>
           <tr id="LinksManageDel">
-            <td colspan="5" class="tdCenter">拖入这里删除</td>
+            <td colspan="6" class="tdCenter">拖入这里删除</td>
           </tr>
           <tr class="LinksManageAdd">
             <td><input type="text" name="href[]" value="http://" size="30" /></td>
+            <td><input type="text" name="ico[]" value="" size="15"></td>
             <td><input type="text" name="title[]" value="链接描述" size="30" /></td>
             <td><input type="text" name="name[]" value="新名称" size="20" /></td>
             <td><input type="text" name="target[]" class="checkbox" value="0" /></td>

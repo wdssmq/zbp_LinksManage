@@ -130,6 +130,7 @@ function InstallPlugin_LinksManage()
 function UninstallPlugin_LinksManage()
 {
   global $zbp;
+  $zbp->LoadModules();
   $links = explode('|', LinksManage_Path("bakfile"));
   foreach ($links as $mod) {
     $file = LinksManage_Path("bakdir") . $mod . '.txt';
