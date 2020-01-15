@@ -33,6 +33,7 @@ if (GetVars('act', 'GET') == 'save') {
       continue;
     }
     $item->href = $_POST['href'][$k];
+    $item->href = str_replace($zbp->host, "{#ZC_BLOG_HOST#}", $item->href);
     $item->ico = $_POST['ico'][$k];
     $item->title = $_POST['title'][$k];
     $item->target = (bool) $_POST['target'][$k] ? '_blank' : '';
@@ -104,14 +105,7 @@ if ($edit = GetVars('edit', 'GET')) {
   if (!empty($edit)) {
     $mod = $zbp->modulesbyfilename[$edit];
   }
-  //旧版升级
-  $file = LinksManage_Path("usr") . $edit . ".json";
-  if (is_file($file)) {
-    $file_contents = file_get_contents($file);
-    unlink($file);
-  } else {
-    $file_contents = $mod->Metas->LM_json;
-  }
+  $file_contents = $mod->Metas->LM_json;
   if (strlen($file_contents) > 0 && $items = json_decode($file_contents)) {
     $list = '';
     foreach ($items as $item) {
