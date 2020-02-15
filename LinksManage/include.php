@@ -70,6 +70,9 @@ function LinksManage_Path($file, $t = "path")
     case "tr":
       return $result . "var/tr.html";
       break;
+    case "new-tr":
+      return $result . "var/new-tr.json";
+      break;
     case "style":
       return $result . "var/style.css";
       break;
