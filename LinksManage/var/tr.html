@@ -13,5 +13,5 @@ if (!isset($item->text)){
   <td><input name="sub[]" value="{if $item->issub}1{/if}" class="checkbox" /></td>
 <tr>
 {if count($item.subs)}
-{foreach $item.subs as $item}{template:Links_admin}{/foreach}
+{foreach $item.subs as $item}{template:lm-module-admin}{/foreach}
 {/if}

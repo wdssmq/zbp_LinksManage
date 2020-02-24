@@ -16,11 +16,11 @@ function LinksManage_BuildTemp(&$templates)
 {
   // global $zbp;
   if (is_file(LinksManage_Path("u-temp"))) {
-    $templates['Links_defend'] = file_get_contents(LinksManage_Path("u-temp"));
+    $templates['lm-module-defend'] = file_get_contents(LinksManage_Path("u-temp"));
   } else {
-    $templates['Links_defend'] = file_get_contents(LinksManage_Path("v-temp"));
+    $templates['lm-module-defend'] = file_get_contents(LinksManage_Path("v-temp"));
   }
-  $templates['Links_admin'] = file_get_contents(LinksManage_Path("tr"));
+  $templates['lm-module-admin'] = file_get_contents(LinksManage_Path("tr"));
 }
 
 function LinksManage_ModuleMenu()

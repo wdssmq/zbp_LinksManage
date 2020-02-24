@@ -52,9 +52,9 @@ if (GetVars('act', 'GET') == 'save') {
   $mod->Metas->LM_json = json_encode($items);
   // 生成content
   $fileName = GetVars('FileName', 'POST');
-  $outTpl = "Links_defend";
-  if (isset($zbp->template->templates["Links_{$fileName}"])) {
-    $outTpl = "Links_{$fileName}";
+  $outTpl = "lm-module-defend";
+  if (isset($zbp->template->templates["lm-module-{$fileName}"])) {
+    $outTpl = "lm-module-{$fileName}";
   }
   foreach ($items as $item) {
     if ($item->ico) {
@@ -96,7 +96,7 @@ $mod->ID = 0;
 $mod->Source = 'plugin_LinksManage';
 
 // 新链接表单项
-$outTpl = "Links_admin";
+$outTpl = "lm-module-admin";
 $zbp->template->SetTags('item', json_decode(file_get_contents(LinksManage_Path("new-tr"))));
 $new_tr = $list = $zbp->template->Output($outTpl);
 $new_tr = str_replace('<tr class="">', '<tr class="LinksManageAdd">', $new_tr);
@@ -116,7 +116,7 @@ if ($edit = GetVars('edit', 'GET')) {
     $list = '';
     foreach ($items as $item) {
       $zbp->template->SetTags('item', $item);
-      $list .= $zbp->template->Output("Links_admin");
+      $list .= $zbp->template->Output($outTpl);
     }
   } else {
     $content = $mod->Content;
@@ -246,10 +246,10 @@ require $blogpath . 'zb_system/admin/admin_top.php';
       </p>
       ------
       <p>对于每个li，会默认添加 "文件名-item" 作为类名，当前为：<?php echo "{$mod->FileName}-item"; ?></p>
-      <p>主题作者可设置<b>Links_<?php echo "{$mod->FileName}"; ?></b>模板对当前模块进行自定义</p>
+      <p>主题作者可设置<b>lm-module-<?php echo "{$mod->FileName}"; ?></b>模板对当前模块进行自定义</p>
       <p>参考：zb_users/plugin/LinksManage/var/li.html</p>
       <p>自定义通用模板：zb_users/plugin/LinksManage/usr/li.html（不推荐）</p>
-      <p>通用模板编译为<b>Links_defend</b></p>
+      <p>通用模板编译为<b>lm-module-defend</b></p>
     </form>
   </div>
 </div>
