@@ -16,11 +16,16 @@ function ActivePlugin_LinksManage()
 }
 function LinksManage_AddItemToNavbar($obj)
 {
+  $input = GetVars('AddNavbar', 'POST');
+  if ($input == 0) {
+    return;
+  }
   $item = LinksManage_GetNewItem();
   $item->href = $obj->Url;
-  $item->text = $obj->title = isset($obj->Name) ? $obj->Name : $obj->Title;
+  $item->text = $item->title = isset($obj->Name) ? $obj->Name : $obj->Title;
   // $item->more["type"] = get_class($obj);
   // $item->more["id"] = $obj->ID;
+
   LinksManage_AddItem2Mod($item, "navbar");
 }
 function LinksManage_BuildTemp(&$templates)
@@ -75,7 +80,7 @@ function LinksManage_AddItem2Mod($item, $fileName)
       break;
     }
   }
-  if ($singlal === "break") {
+  if ($singlal !== "break") {
     $items[] = $item;
     $mod->Metas->LM_json = json_encode($items);
   }
