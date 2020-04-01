@@ -1,5 +1,4 @@
 <?php
-
 //注册插件
 RegisterPlugin("LinksManage", "ActivePlugin_LinksManage");
 
@@ -10,8 +9,20 @@ function ActivePlugin_LinksManage()
   Add_Filter_Plugin('Filter_Plugin_Admin_PageMng_SubMenu', 'LinksManage_AddMenu');
   Add_Filter_Plugin('Filter_Plugin_Admin_ModuleMng_SubMenu', 'LinksManage_ModuleMenu');
   Add_Filter_Plugin('Filter_Plugin_Zbp_BuildTemplate', 'LinksManage_BuildTemp');
+  // 接管AddItemToNavbar
+  Add_Filter_Plugin('Filter_Plugin_PostPage_Succeed', 'LinksManage_AddItemToNavbar');
+  Add_Filter_Plugin('Filter_Plugin_PostCategory_Succeed', 'LinksManage_AddItemToNavbar');
+  Add_Filter_Plugin('Filter_Plugin_PostTag_Succeed', 'LinksManage_AddItemToNavbar');
 }
-
+function LinksManage_AddItemToNavbar($obj)
+{
+  $item = LinksManage_GetNewItem();
+  $item->href = $obj->Url;
+  $item->text = $obj->title = isset($obj->Name) ? $obj->Name : $obj->Title;
+  // $item->more["type"] = get_class($obj);
+  // $item->more["id"] = $obj->ID;
+  LinksManage_AddItem2Mod($item, "navbar");
+}
 function LinksManage_BuildTemp(&$templates)
 {
   // global $zbp;
@@ -22,7 +33,6 @@ function LinksManage_BuildTemp(&$templates)
   }
   $templates['lm-module-admin'] = file_get_contents(LinksManage_Path("tr"));
 }
-
 function LinksManage_ModuleMenu()
 {
   global $zbp;
@@ -52,6 +62,51 @@ function LinksManage_AddMenu()
 {
   global $zbp;
   echo '<a href="' . LinksManage_Path("main.php?edit=navbar", "host") . '" class="LinksManage"><span class="m-left">导航管理</span></a>';
+}
+function LinksManage_AddItem2Mod($item, $fileName)
+{
+  global $zbp;
+  $mod = $zbp->GetModuleByFileName($fileName);
+  $items = json_decode($mod->Metas->LM_json);
+  $singlal = "";
+  foreach ($items as $temp) {
+    if (json_encode($temp) == json_encode($item)) {
+      $singlal = "break";
+      break;
+    }
+  }
+  if ($singlal === "break") {
+    $items[] = $item;
+    $mod->Metas->LM_json = json_encode($items);
+  }
+  $mod->Content = LinksManage_GenModCon($items, $fileName);
+  $mod->Save();
+}
+function LinksManage_GenModCon($items, $fileName)
+{
+  global $zbp;
+  $outTpl = "lm-module-defend";
+  if (isset($zbp->template->templates["lm-module-{$fileName}"])) {
+    $outTpl = "lm-module-{$fileName}";
+  }
+  $content = "";
+  foreach ($items as $item) {
+    if (isset($item->ico) && !empty($item->ico)) {
+      $item->ico = "<i class=\"{$item->ico}\"></i>";
+    } else {
+      $item->ico = "";
+    }
+    $zbp->template->SetTags('item', $item);
+    $zbp->template->SetTags('id', $fileName);
+    $content .= $zbp->template->Output($outTpl);
+  }
+  $content = str_replace(array('target="" ', ' target=""', "\n"), "", CloseTags($content));
+  $content = preg_replace('/>\s+</', "><", $content);
+  return $content;
+}
+function LinksManage_GetNewItem()
+{
+  return json_decode(file_get_contents(LinksManage_Path("new-tr")));
 }
 function LinksManage_Path($file, $t = "path")
 {

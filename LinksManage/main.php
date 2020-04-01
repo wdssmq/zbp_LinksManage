@@ -21,7 +21,6 @@ if (GetVars('act', 'GET') == 'save') {
   // todo
   // GetModuleByFileName 判断是否重复
   $mod = $zbp->GetModuleByID(GetVars('ID', 'POST'));
-  $content = '';
   // 解析表单内容为数组
   $sub = 0;
   $tree = (int) $_POST['tree'] == 1;
@@ -52,21 +51,7 @@ if (GetVars('act', 'GET') == 'save') {
   $mod->Metas->LM_json = json_encode($items);
   // 生成content
   $fileName = GetVars('FileName', 'POST');
-  $outTpl = "lm-module-defend";
-  if (isset($zbp->template->templates["lm-module-{$fileName}"])) {
-    $outTpl = "lm-module-{$fileName}";
-  }
-  foreach ($items as $item) {
-    if ($item->ico) {
-      $item->ico = "<i class=\"{$item->ico}\"></i>";
-    }
-    $zbp->template->SetTags('item', $item);
-    $zbp->template->SetTags('id', $fileName);
-    $content .= $zbp->template->Output($outTpl);
-  }
-  $content = str_replace(array('target="" ', ' target=""', "\n"), "", CloseTags($content));
-  $content = preg_replace('/>\s+</', "><", $content);
-  $mod->Content = $content;
+  $mod->Content = LinksManage_GenModCon($items, $fileName);
   // 其他字段写入
   $mod->Name = $_POST['Name'];
   if ($mod->ID == 0) {
@@ -97,7 +82,7 @@ $mod->Source = 'plugin_LinksManage';
 
 // 新链接表单项
 $outTpl = "lm-module-admin";
-$zbp->template->SetTags('item', json_decode(file_get_contents(LinksManage_Path("new-tr"))));
+$zbp->template->SetTags('item', LinksManage_GetNewItem());
 $new_tr = $list = $zbp->template->Output($outTpl);
 $new_tr = str_replace('<tr class="">', '<tr class="LinksManageAdd">', $new_tr);
 
