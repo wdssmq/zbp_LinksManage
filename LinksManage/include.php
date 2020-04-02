@@ -25,7 +25,6 @@ function LinksManage_AddItemToNavbar($obj)
   $item->text = $item->title = isset($obj->Name) ? $obj->Name : $obj->Title;
   // $item->more["type"] = get_class($obj);
   // $item->more["id"] = $obj->ID;
-
   LinksManage_AddItem2Mod($item, "navbar");
 }
 function LinksManage_BuildTemp(&$templates)

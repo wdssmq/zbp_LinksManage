@@ -1,0 +1,8 @@
+.DS_Store
+Thumbs.db
+composer.lock
+zbignore.txt
+
+*.code-workspace
+usr/*
+cache/*
