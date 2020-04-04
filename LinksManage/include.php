@@ -73,6 +73,10 @@ function LinksManage_AddItem2Mod($item, $fileName)
   $mod = $zbp->GetModuleByFileName($fileName);
   $items = json_decode($mod->Metas->LM_json);
   $singlal = "";
+  // json在插件编辑页保存过才会生成
+  if (empty($items)) {
+    return;
+  }
   foreach ($items as $temp) {
     if (json_encode($temp) == json_encode($item)) {
       $singlal = "break";
