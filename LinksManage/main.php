@@ -36,15 +36,15 @@ if (GetVars('act', 'GET') == 'save') {
     $item->ico = $_POST['ico'][$k];
     $item->title = $_POST['title'][$k];
     $item->target = (bool) $_POST['target'][$k] ? '_blank' : '';
-    $item->text = $_POST['text'][$k];
+    $item->text = trim($_POST['text'][$k]);
     $item->subs = array();
     $item->issub = 0;
     if ($k > 0 && $_POST['sub'][$k]) {
       $item->issub = 1;
-      $parent->subs[] = $item;
+      $parent->subs[$item->text] = $item;
     } else {
-      $items[$k] = $item;
-      $parent = &$items[$k];
+      $items[$item->text] = $item;
+      $parent = &$items[$item->text];
     }
   }
   // 转为JSON后存至Meta
@@ -65,8 +65,8 @@ if (GetVars('act', 'GET') == 'save') {
   FilterModule($mod);
   // 保存并更新缓存
   $mod->Save();
-  $zbp->AddBuildModule($mod->FileName);
-  $zbp->BuildModule();
+  // $zbp->AddBuildModule($mod->FileName);
+  // $zbp->BuildModule();
 
   // 写入文件
   // $file = LinksManage_Path("usr") . $mod->FileName . ".json";
@@ -239,6 +239,7 @@ require $blogpath . 'zb_system/admin/admin_top.php';
     </form>
   </div>
 </div>
+
 <script>
   function checkInfo() {
     if (!$("#edtName").val()) {
