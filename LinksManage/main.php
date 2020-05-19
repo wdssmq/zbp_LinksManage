@@ -65,13 +65,6 @@ if (GetVars('act', 'GET') == 'save') {
   FilterModule($mod);
   // 保存并更新缓存
   $mod->Save();
-  // $zbp->AddBuildModule($mod->FileName);
-  // $zbp->BuildModule();
-
-  // 写入文件
-  // $file = LinksManage_Path("usr") . $mod->FileName . ".json";
-  // file_put_contents($file, json_encode($items));
-
   $zbp->SetHint('good');
   Redirect($_POST['stay'] == '1' ? $_SERVER['HTTP_REFERER'] : '../../../zb_system/cmd.php?act=ModuleMng');
 }
@@ -100,6 +93,7 @@ if ($edit = GetVars('edit', 'GET')) {
   if (strlen($file_contents) > 0 && $items = json_decode($file_contents)) {
     $list = '';
     foreach ($items as $item) {
+      $item->subs = (array) $item->subs;
       $zbp->template->SetTags('item', $item);
       $list .= $zbp->template->Output($outTpl);
     }
