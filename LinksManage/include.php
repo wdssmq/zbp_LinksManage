@@ -13,6 +13,49 @@ function ActivePlugin_LinksManage()
   Add_Filter_Plugin('Filter_Plugin_PostPage_Succeed', 'LinksManage_AddItemToNavbar');
   Add_Filter_Plugin('Filter_Plugin_PostCategory_Succeed', 'LinksManage_AddItemToNavbar');
   Add_Filter_Plugin('Filter_Plugin_PostTag_Succeed', 'LinksManage_AddItemToNavbar');
+  Add_Filter_Plugin('Filter_Plugin_Cmd_Ajax', 'LinksManage_Ajax');
+}
+function LinksManage_Ajax($src)
+{
+  global $zbp;
+  if ("LinksManage" !== $src) {
+    return;
+  }
+  $q = GetVars('q', 'GET');
+  $objResult = array();
+  // 分类
+  $w = array();
+  $w[] = array('search', 'cate_Name', 'cate_Alias', 'cate_Intro', $q);
+  $sql = $zbp->db->sql->Select($zbp->table['Category'], '*', $w);
+  $cateList = $zbp->GetListType('Category', $sql);
+  $WhiteList = array(
+    'ID' => null,
+    'Name' => null,
+    'Title' => null,
+    'Url' => null
+  );
+  foreach ($cateList as $cate) {
+    $_cate = array_intersect_key($cate->GetData(), $WhiteList);
+    $_cate["Url"] = $cate->Url;
+    $_cate["Title"] = $cate->Name;
+    $_cate["Type"] = "cate";
+    $objResult[] = $_cate;
+  }
+  // 页面
+  $w = array();
+  $w[] = array('search', 'log_Content', 'log_Intro', 'log_Title', $q);
+  $pageList = $zbp->GetPageList(
+    "*",
+    $w
+  );
+  foreach ($pageList as $page) {
+    $_page = array_intersect_key($page->GetData(), $WhiteList);
+    $_page["Url"] = $page->Url;
+    // $_page["Title"] = $page->Name;
+    $_page["Type"] = "page";
+    $objResult[] = $_page;
+  }
+  JsonReturn($objResult);
 }
 function LinksManage_AddItemToNavbar($obj)
 {
@@ -157,6 +200,9 @@ function LinksManage_Path($file, $t = "path")
   switch ($file) {
     case "cache":
       return $zbp->usersdir . "cache/linksmanage/";
+      break;
+    case "tpl-search":
+      return $result . "tpl/search-box.html";
       break;
     case "u-temp":
       return $result . "usr/li.html";
