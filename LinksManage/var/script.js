@@ -57,7 +57,7 @@ $(function () {
       $("#LinksManageList").append($("tfoot .LinksManageAdd").clone());
     }
     $("#LinksManageList .LinksManageAdd").each(function () {
-      $(this).removeClass("LinksManageAdd");
+      $(this).addClass("new").removeClass("LinksManageAdd");
     });
     return;
   });
@@ -175,40 +175,64 @@ $(function () {
       $("#search-result").empty();
       for (let i in data) {
         let obj = data[i];
-        $("<option value='" + obj.ID + "'>" + obj.Title + "</option>")
+        $("<option value='" + obj.Url + "'>" + obj.Title + "</option>")
           .appendTo("#search-result")
           .click(function () {
-            $("#search-result").val(obj.ID);
+            $("#search-result").val(obj.Url);
             $("#search-view").html(
               [obj.Title, obj.Url].map((a) => "<p>" + a + "</p>")
             );
-            fnShowBox($("#search-box"), 0);
+            // fnShowBox($("#search-box"), 0);
             $("#search-fill").removeAttr("disabled");
             objPub = obj;
+          })
+          .dblclick(function () {
+            search_insert();
           });
-        // $("#search-result").append("<option value='Value'>" + obj.Title + "</option>");
       }
     });
   }
 
   $("#search-do").click(function () {
+    search_insert();
+  });
+  function search_insert() {
+    // 仅插入一次选中项
+    const $el = $("#search-result option:selected");
+    const tmp = $("#search-top").data("text") || $("#search-top").text();
+    $("#search-top").data("text", tmp);
+    // console.log($el.val());
+    if ($el.length == 0 || $el.data("done") == "yes") {
+      $("#search-top")
+        .fadeOut(593, function () {
+          $(this).text("项目已添加");
+        })
+        .fadeIn(593)
+        .delay(1593)
+        .fadeOut(593, function () {
+          $(this).text(tmp);
+        })
+        .fadeIn(593);
+      return false;
+    }
+    // 自动添加项目并返回状态
     $(".js-add").click();
-
-    let $el;
+    let $newTr;
     $("#LinksManageList tr").each(function () {
-      console.log($(this).html() == $(".LinksManageAdd").html());
-      if ($(this).html() == $(".LinksManageAdd").html()) $el = $(this);
+      // console.log($(this).html() == $(".LinksManageAdd").html());
+      if ($(this).html() == $(".LinksManageAdd").html()) $newTr = $(this);
     });
-    if ($el) {
+    if ($newTr) {
       console.log(objPub);
       for (let i in objPub) {
-        $el.find(`.fill-${i}`).val(objPub[i]);
+        $newTr.find(`.fill-${i}`).val(objPub[i]);
       }
+      $el.data("done", "yes");
     }
-  });
+  }
 
   // mock
-  return
+  // return;
   function fnAjax(
     q,
     fnback = function (n) {

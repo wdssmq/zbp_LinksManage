@@ -1,14 +1,14 @@
 <div id="search-box" class="ui-draggable fade">
-  <p style="padding:5px;background:#f0f0f0;text-align:center;">
-    <input id="search-inp" name="search-inp" style="width:250px;" type="text" placeholder="可使用ID，标题关键词，文件名……"
-      autocomplete="off"><input type="button" class="button" id="search-btn" value="查询">
-    <input type="hidden" value="关闭" class="buttons" onclick="$('#search-box').slideToggle();" />
-  </p>
+  <div id="search-top" class="find-row">鼠标按住这里可以拖动（双击关闭）</div>
   <div id="search-con">
+    <p>
+      <input id="search-inp" name="search-inp" style="width:250px;" type="text" placeholder="留空将列出全部"
+        autocomplete="off"><input type="button" class="button" id="search-btn" value="查询">
+      <input type="hidden" value="关闭" class="buttons" onclick="$('#search-box').slideToggle();" />
+    </p>
     <select style="width:100%;" id="search-result" name="search-result" size="7" multiple="multiple"></select>
+    <div id="search-view"></div>
   </div>
-  <div id="search-view"></div>
-  <div id="search-tip" style="float:left;">点击空白处并按住可移动,双击关闭</div>
-  <div id="search-do" style="float:right;"><input disabled id="search-fill" type="button" value="添加">
+  <div id="search-do" class="text-center"><input disabled id="search-fill" type="button" value="添加">
   </div>
 </div>

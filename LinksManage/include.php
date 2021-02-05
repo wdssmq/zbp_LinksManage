@@ -21,8 +21,12 @@ function LinksManage_Ajax($src)
   if ("LinksManage" !== $src) {
     return;
   }
-  $q = GetVars('q', 'GET');
   $objResult = array();
+  $q = GetVars('q', 'GET');
+  if (empty($q)) {
+    $objResult[] = array("Title" => "首页", "Url" => $zbp->host);
+    $objResult[] = array("Title" => "管理", "Url" => "{$zbp->host}zb_system/cmd.php?act=login");
+  }
   // 分类
   $w = array();
   $w[] = array('search', 'cate_Name', 'cate_Alias', 'cate_Intro', $q);
@@ -43,7 +47,7 @@ function LinksManage_Ajax($src)
   }
   // 页面
   $w = array();
-  $w[] = array('search', 'log_Content', 'log_Intro', 'log_Title', $q);
+  $w[] = array('search', 'log_Title', 'log_Intro', 'log_Content', $q);
   $pageList = $zbp->GetPageList(
     "*",
     $w
