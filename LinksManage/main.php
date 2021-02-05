@@ -234,7 +234,7 @@ require $blogpath . 'zb_system/admin/admin_top.php';
   </div>
 </div>
 
-<?php echo file_get_contents(LinksManage_Path("tpl-search"));;?>
+<?php echo file_get_contents(LinksManage_Path("tpl-search"));?>
 <?php
 require $blogpath . 'zb_system/admin/admin_footer.php';
 RunTime();

@@ -232,7 +232,9 @@ $(function () {
   }
 
   // mock
-  // return;
+  if (location.href.indexOf("edsa") == -1) {
+    return;
+  }
   function fnAjax(
     q,
     fnback = function (n) {
