@@ -1,10 +1,10 @@
 function checkInfo() {
   if (!$("#edtName").val()) {
-    alert("<?php echo $lang['error']['72'] ?>");
+    alert("名称不能为空");
     return false;
   }
   if (!$("#edtFileName").val()) {
-    alert("<?php echo $lang['error']['75'] ?>");
+    alert("文件名不能为空");
     return false;
   }
   if (!$("#edtHtmlID").val()) {
