@@ -114,8 +114,8 @@ function LinksManage_ModuleMenu()
 }
 function LinksManage_Head()
 {
-  echo '<link rel="stylesheet" href="'. LinksManage_Path("style", "host") .'?v=2021-02-05">';
-  echo '<script src="' . LinksManage_Path("script", "host") . '?v=2021-02-05"></script>';
+  echo '<link rel="stylesheet" href="'. LinksManage_Path("style", "host") .'?v=20220720123">';
+  echo '<script src="' . LinksManage_Path("script", "host") . '?v=20220720123"></script>';
   $action = GetVars('act', 'GET');
   if ($action === "ThemeMng" && GetVars('install', 'GET') !== null) {
     $files = explode('|', LinksManage_Path("bakfile"));
