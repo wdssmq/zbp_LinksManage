@@ -1,3 +1,5 @@
+
+// eslint-disable-next-line no-unused-vars
 function checkInfo() {
   if (!$("#edtName").val()) {
     alert("名称不能为空");
@@ -14,6 +16,7 @@ function checkInfo() {
 }
 
 // fnReplaceHost("旧内容","新内容");
+// eslint-disable-next-line no-unused-vars
 function fnReplaceHost(o, n) {
   $("input[name='href[]']").each(function () {
     let curVal = $(this).val();
@@ -26,7 +29,7 @@ $(function () {
   if ($(".js-mod").length > 0) {
     let LinksManage = $(".js-mod").val().split("|"),
       mod;
-    for (link in LinksManage) {
+    for (let link in LinksManage) {
       if ((mod = LinksManage[link])) {
         $(".widget-list .widget_id_" + mod)
           .addClass("LinksManage")
@@ -78,8 +81,7 @@ $(function () {
           var me = this;
           setTimeout(function () {
             $(me)
-              .closest("tr")
-              [$(me).hasClass("imgcheck-on") ? "addClass" : "removeClass"](
+              .closest("tr")[$(me).hasClass("imgcheck-on") ? "addClass" : "removeClass"](
                 "LinksManageSub",
               );
           }, 20);
@@ -108,10 +110,9 @@ $(function () {
       let me = this;
       setTimeout(function () {
         $(me)
-          .closest("tr")
-          [$(me).hasClass("imgcheck-on") ? "addClass" : "removeClass"](
-            "LinksManageSub",
-          );
+          .closest("tr")[$(me).hasClass("imgcheck-on") ? "addClass" : "removeClass"](
+          "LinksManageSub",
+        );
       }, 20);
     });
 
@@ -136,8 +137,8 @@ $(function () {
       opt.top =
         opt.top ||
         ($(window).height() - $el.outerHeight()) / 2 +
-          $(window).scrollTop() -
-          37;
+        $(window).scrollTop() -
+        37;
       opt.left = opt.left || ($(window).width() - $el.outerWidth()) / 2;
       opt.left = opt.mid - $el.outerWidth() / 2 || opt.left;
       if ($el.data("fixed")) {
