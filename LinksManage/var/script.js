@@ -33,14 +33,14 @@ $(function () {
           .find("a:first")
           .attr(
             "href",
-            bloghost + "zb_users/plugin/LinksManage/main.php" + "?edit=" + mod
+            bloghost + "zb_users/plugin/LinksManage/main.php" + "?edit=" + mod,
           );
         $(".SubMenu")
           .find("a[href$='" + mod + "']")
           .addClass("LinksManage")
           .attr(
             "href",
-            bloghost + "zb_users/plugin/LinksManage/main.php" + "?edit=" + mod
+            bloghost + "zb_users/plugin/LinksManage/main.php" + "?edit=" + mod,
           );
       }
     }
@@ -51,7 +51,7 @@ $(function () {
     //   }
     // });
   }
-  ///////////
+  // /////////
   $(".js-add").click(function () {
     if ($(".LinksManageAdd").length === 1) {
       $("#LinksManageList").append($("tfoot .LinksManageAdd").clone());
@@ -80,7 +80,7 @@ $(function () {
             $(me)
               .closest("tr")
               [$(me).hasClass("imgcheck-on") ? "addClass" : "removeClass"](
-                "LinksManageSub"
+                "LinksManageSub",
               );
           }, 20);
         });
@@ -110,7 +110,7 @@ $(function () {
         $(me)
           .closest("tr")
           [$(me).hasClass("imgcheck-on") ? "addClass" : "removeClass"](
-            "LinksManageSub"
+            "LinksManageSub",
           );
       }, 20);
     });
@@ -180,7 +180,7 @@ $(function () {
           .click(function () {
             $("#search-result").val(obj.Url);
             $("#search-view").html(
-              [obj.Title, obj.Url].map((a) => "<p>" + a + "</p>")
+              [obj.Title, obj.Url].map(a => "<p>" + a + "</p>"),
             );
             // fnShowBox($("#search-box"), 0);
             $("#search-fill").removeAttr("disabled");
@@ -239,7 +239,7 @@ $(function () {
     q,
     fnback = function (n) {
       console.log(n);
-    }
+    },
   ) {
     let objRlt;
     $.getJSON(ajaxurl + "LinksManage&q=" + q, function (data) {
