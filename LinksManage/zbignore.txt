@@ -1,3 +1,4 @@
 *.code-workspace
 usr/*
 cache/*
+about.php
