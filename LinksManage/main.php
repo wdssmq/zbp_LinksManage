@@ -91,7 +91,8 @@ $delbtn = '';
 
 if ($edit = GetVars('edit', 'GET')) {
   if (!empty($edit)) {
-    $mod = $zbp->modulesbyfilename[$edit];
+    // $mod = $zbp->modulesbyfilename[$edit];
+    $mod = $zbp->GetModuleByFileName($edit);
   }
   $file_contents = $mod->Metas->LM_json;
   if (strlen($file_contents) > 0 && $items = json_decode($file_contents)) {
