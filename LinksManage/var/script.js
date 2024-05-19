@@ -18,14 +18,14 @@ function checkInfo() {
 // fnReplaceHost("旧内容","新内容");
 // eslint-disable-next-line no-unused-vars
 function fnReplaceHost(o, n) {
-  $("input[name='href[]']").each(function () {
+  $("input[name='href[]']").each(function() {
     let curVal = $(this).val();
     let newVal = curVal.replace(o, n);
     $(this).val(newVal);
   });
 }
 
-$(function () {
+$(function() {
   if ($(".js-mod").length > 0) {
     let LinksManage = $(".js-mod").val().split("|"),
       mod;
@@ -55,16 +55,16 @@ $(function () {
     // });
   }
   // /////////
-  $(".js-add").click(function () {
+  $(".js-add").click(function() {
     if ($(".LinksManageAdd").length === 1) {
       $("#LinksManageList").append($("tfoot .LinksManageAdd").clone());
     }
-    $("#LinksManageList .LinksManageAdd").each(function () {
+    $("#LinksManageList .LinksManageAdd").each(function() {
       $(this).addClass("new").removeClass("LinksManageAdd");
     });
     return;
   });
-  $("#LinksManageList td").each(function () {
+  $("#LinksManageList td").each(function() {
     let intWidth = $(this).width();
     $(this).css({ width: intWidth });
     // $(this).data("width", intWidth);
@@ -74,12 +74,12 @@ $(function () {
     opacity: 0.5,
     cursor: "move",
     delay: 150,
-    stop: function (event, ui) {
+    stop: function(event, ui) {
       $("input[name='sub[]']")
         .next(".imgcheck")
-        .click(function () {
+        .click(function() {
           var me = this;
-          setTimeout(function () {
+          setTimeout(function() {
             $(me)
               .closest("tr")[$(me).hasClass("imgcheck-on") ? "addClass" : "removeClass"](
                 "LinksManageSub",
@@ -92,13 +92,13 @@ $(function () {
   $("#LinksManageDel").droppable({
     accept: "#LinksManageList tr",
     addClasses: false,
-    drop: function (event, ui) {
+    drop: function(event, ui) {
       ui.draggable.remove();
     },
-    over: function (event, ui) {
+    over: function(event, ui) {
       $(this).find("td").html("松手删除");
     },
-    out: function (event, ui) {
+    out: function(event, ui) {
       $(this).find("td").html("拖入这里删除");
     },
     activeClass: "active",
@@ -106,13 +106,13 @@ $(function () {
   });
   $("input[name='sub[]']")
     .next(".imgcheck")
-    .click(function () {
+    .click(function() {
       let me = this;
-      setTimeout(function () {
+      setTimeout(function() {
         $(me)
           .closest("tr")[$(me).hasClass("imgcheck-on") ? "addClass" : "removeClass"](
-          "LinksManageSub",
-        );
+            "LinksManageSub",
+          );
       }, 20);
     });
 
@@ -122,12 +122,12 @@ $(function () {
     cursor: "move",
   });
 
-  $(".js-search").click(function () {
+  $(".js-search").click(function() {
     const opt = {};
     opt.top = $("#LinksManageDel").offset().top;
     fnShowBox($("#search-box"), 0, opt);
   });
-  $("#search-box").dblclick(function (e) {
+  $("#search-box").dblclick(function(e) {
     fnShowBox($("#search-box"), e.target.nodeName === "DIV");
   });
   function fnShowBox($el, hide = 0, opt = {}) {
@@ -171,14 +171,14 @@ $(function () {
     $("#search-result")
       .empty()
       .append("<option value='查询中'>查询中……</option>");
-    fnAjax(sWord, function (data) {
+    fnAjax(sWord, function(data) {
       // console.log(data);
       $("#search-result").empty();
       for (let i in data) {
         let obj = data[i];
         $("<option value='" + obj.Url + "'>" + obj.Title + "</option>")
           .appendTo("#search-result")
-          .click(function () {
+          .click(function() {
             $("#search-result").val(obj.Url);
             $("#search-view").html(
               [obj.Title, obj.Url].map(a => "<p>" + a + "</p>"),
@@ -187,14 +187,14 @@ $(function () {
             $("#search-fill").removeAttr("disabled");
             objPub = obj;
           })
-          .dblclick(function () {
+          .dblclick(function() {
             search_insert();
           });
       }
     });
   }
 
-  $("#search-do").click(function () {
+  $("#search-do").click(function() {
     search_insert();
   });
   function search_insert() {
@@ -205,12 +205,12 @@ $(function () {
     // console.log($el.val());
     if ($el.length == 0 || $el.data("done") == "yes") {
       $("#search-top")
-        .fadeOut(593, function () {
+        .fadeOut(593, function() {
           $(this).text("项目已添加");
         })
         .fadeIn(593)
         .delay(1593)
-        .fadeOut(593, function () {
+        .fadeOut(593, function() {
           $(this).text(tmp);
         })
         .fadeIn(593);
@@ -219,7 +219,7 @@ $(function () {
     // 自动添加项目并返回状态
     $(".js-add").click();
     let $newTr;
-    $("#LinksManageList tr").each(function () {
+    $("#LinksManageList tr").each(function() {
       // console.log($(this).html() == $(".LinksManageAdd").html());
       if ($(this).html() == $(".LinksManageAdd").html()) $newTr = $(this);
     });
@@ -238,12 +238,12 @@ $(function () {
   }
   function fnAjax(
     q,
-    fnback = function (n) {
+    fnback = function(n) {
       console.log(n);
     },
   ) {
     let objRlt;
-    $.getJSON(ajaxurl + "LinksManage&q=" + q, function (data) {
+    $.getJSON(ajaxurl + "LinksManage&q=" + q, function(data) {
       if (data) {
         objRlt = data;
         fnback(objRlt.data);
