@@ -25,7 +25,7 @@ if (GetVars('act', 'GET') == 'save') {
   $sub = 0;
   $tree = (int) $_POST['tree'] == 1;
   $items = array();
-  $parent = null;
+  $parent = new stdClass();
   foreach ($_POST['text'] as $k => $v) {
     $item = (object) array();
     if ($k == count($_POST['text']) - 1) {
