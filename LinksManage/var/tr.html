@@ -1,9 +1,15 @@
 <!-- 后台管理输出 -->
 {php}
 if (!isset($item->text)){
-  $item->text = $item->name;
+  $item->text = isset($item->name) ? $item->name : '';
 }
 $item->text = FormatString($item->text, '[html-format]');
+if (!isset($item->issub)) {
+  $item->issub = 0;
+}
+if (!isset($item->subs) || !is_array($item->subs)) {
+  $item->subs = array();
+}
 {/php}
 <tr class="{if $item->issub}LinksManageSub{/if}">
   <td class="fisrt"><input class="fill-Url" name="href[]" value="{$item.href}" size="30"></td>
